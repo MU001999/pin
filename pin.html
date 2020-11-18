@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pin</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+    <link rel="stylesheet" href="src/bootstrap.css">
+    <script src="src/vue.js"></script>
+    <script src="src/jquery.js"></script>
+    <script src="src/bootstrap.js"></script>
 </head>
 <body>
     <div id="pin" class="alert alert-success" role="alert">
@@ -37,6 +37,12 @@
     </div>
 
     <style>
+        body {
+            background-image: url(background.jpg);
+            background-size:     cover;
+            background-repeat:   no-repeat;
+        }
+
         #pin {
             position: absolute;
         }
@@ -96,7 +102,7 @@
                 _move = true;
                 _x = e.pageX-parseInt($("#pin").css("left"));
                 _y = e.pageY-parseInt($("#pin").css("top"));
-                $("#pin").fadeTo(20, 0.5);//点击后开始拖动并透明显示
+                $("#pin").fadeTo(20, 0.5);
             });
             $(document).mousemove(function(e) {
                 if(_move) {
