@@ -102,7 +102,6 @@
                 _move = true;
                 _x = e.pageX-parseInt($("#pin").css("left"));
                 _y = e.pageY-parseInt($("#pin").css("top"));
-                $("#pin").fadeTo(20, 0.5);
             });
             $(document).mousemove(function(e) {
                 if(_move) {
@@ -112,7 +111,6 @@
                 }
             }).mouseup(function() {
                 _move = false;
-                $("#pin").fadeTo("fast", 1);
             });
         }
         move();
