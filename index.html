@@ -5,82 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pin</title>
     <link rel="stylesheet" href="src/bootstrap.css">
-    <script src="src/bootstrap.js"></script>
     <script src="src/vue.js"></script>
 </head>
-<body style="-webkit-app-region: drag; width: 300px; overflow: hidden;">
-    <div id="pin" class="alert alert-success" role="alert">
-        <form v-on:submit.prevent="addNewPin">
-            <div class="form-group">
-                <label for="new-pin">Pin</label>
-                <input
-                    v-model="NewPinText"
-                    id="new-pin"
-                    placeholder="E.g. Feed the cat"
-                    style="-webkit-app-region: no-drag"
-                >
-                <button style="-webkit-app-region: no-drag">Add</button>
-            </div>
-
-            <div class="form-group">
-                <ul class="list-group">
-                    <li
-                        is="pin-item"
-                        v-for="(todo, index) in todos"
-                        v-bind:key="todo.id"
-                        v-bind:title="todo.title"
-                        v-on:remove="todos.splice(index, 1)"
-                    ></li>
-                </ul>
+<body style="-webkit-app-region: no-drag; width: 100%; overflow: hidden; transform: scale(100vw / 300);">
+    <div id="pin" class="alert alert-info" role="alert" style="-webkit-app-region: drag; width: 99%; margin-right: 1%;">
+        <form v-on:submit.prevent="newPin" class="form-group">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" style="-webkit-app-region: no-drag" type="button" v-on:click="newPin">Pin!</button>
+                </span>
+                <input v-model="NewPinText" id="new-pin" type="text" class="form-control" style="-webkit-app-region: no-drag" placeholder="E.g. Feed the cat">
             </div>
         </form>
+        <ul class="list-group">
+            <li
+                is="pin-item"
+                v-for="(todo, index) in todos"
+                v-bind:key="todo.id"
+                v-bind:title="todo.title"
+                v-on:remove="unPin(index)"
+            ></li>
+        </ul>
     </div>
 
     <script>
         Vue.component('pin-item', {
             template: '\
                 <li class="list-group-item">\
-                    <span class="badge" style="-webkit-app-region: no-drag" v-on:click="$emit(\'remove\')">Remove</span>\
-                    <input type="checkbox" style="-webkit-app-region: no-drag"> {{ title }}\
+                    <input type="checkbox" style="-webkit-app-region: no-drag"> &nbsp; {{ title }}\
+                    <button type="button" class="close" aria-label="Close" style="-webkit-app-region: no-drag" v-on:click="$emit(\'remove\')"><span aria-hidden="true">&times;</span></button>\
                 </li>\
             ',
             props: ['title']
         })
 
-        let ipcRenderer = require('electron').ipcRenderer;
-        
-        new Vue({
-            el: '#pin',
-            data: {
+        const ipcRenderer = require('electron').ipcRenderer;
+
+        const Store = require('electron-store');
+        const store = new Store();
+
+        stored_data = store.get('stored_data')
+        if (!stored_data)
+        {
+            stored_data = {
                 NewPinText: '',
                 todos: [
-                {
-                    id: 1,
-                    title: 'Do nothing',
-                }
+                    {
+                        id: 1,
+                        title: 'Do nothing',
+                    }
                 ],
                 nextTodoId: 2
-            },
-            created: function() {
+            }
+        }
+
+        new Vue({
+            el: '#pin',
+            data: stored_data,
+            mounted: function() {
                 body = document.getElementsByTagName('body')[0];
+                width = window.getComputedStyle(body).width.slice(0, -2);
                 height = window.getComputedStyle(body).height.slice(0, -2);
-                ipcRenderer.send('resize', height);
+                ipcRenderer.send('resize', width, height);
             },
             updated: function() {
                 body = document.getElementsByTagName('body')[0];
+                width = window.getComputedStyle(body).width.slice(0, -2);
                 height = window.getComputedStyle(body).height.slice(0, -2);
-                ipcRenderer.send('resize', height);
+                ipcRenderer.send('resize', width, height);
             },
             methods: {
-                addNewPin: function () {
+                newPin: function () {
                     this.todos.push({
                         id: this.nextTodoId++,
                         title: this.NewPinText
                     })
-                    this.NewPinText = ''
+                    this.NewPinText = '';
+                    store.set('stored_data', stored_data);
+                },
+                unPin: function (index) {
+                    this.todos.splice(index, 1);
+                    store.set('stored_data', stored_data);
                 }
             }
-        })
+        });
     </script>
 </body>
 </html>
