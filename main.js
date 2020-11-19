@@ -2,18 +2,18 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 
 function createWindow () {
   const win = new BrowserWindow({
-    width: 310,
-    height: 200,
+    width: 220,
+    minWidth: 220,
     useContentSize: true,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      enableRemoteModule: true
     },
-    frame: false,
-    resizable: false
+    frame: false
   })
 
-  ipcMain.on('resize', (e, height) => {
-    win.setContentSize(300, parseInt(height));
+  ipcMain.on('resize', (e, width, height) => {
+    win.setContentSize(parseInt(width), parseInt(height));
   })
 
   win.loadFile('index.html')
