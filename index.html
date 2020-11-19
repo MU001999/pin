@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pin</title>
     <link rel="stylesheet" href="src/bootstrap.css">
-    <script src="src/vue.js"></script>
     <script src="src/bootstrap.js"></script>
+    <script src="src/vue.js"></script>
 </head>
-<body>
+<body style="-webkit-app-region: drag; width: 300px; overflow: hidden;">
     <div id="pin" class="alert alert-success" role="alert">
         <form v-on:submit.prevent="addNewPin">
             <div class="form-group">
@@ -17,8 +17,9 @@
                     v-model="NewPinText"
                     id="new-pin"
                     placeholder="E.g. Feed the cat"
+                    style="-webkit-app-region: no-drag"
                 >
-                <button>Add</button>
+                <button style="-webkit-app-region: no-drag">Add</button>
             </div>
 
             <div class="form-group">
@@ -39,13 +40,15 @@
         Vue.component('pin-item', {
             template: '\
                 <li class="list-group-item">\
-                    <span class="badge" v-on:click="$emit(\'remove\')">Remove</span>\
-                    <input type="checkbox"> {{ title }}\
+                    <span class="badge" style="-webkit-app-region: no-drag" v-on:click="$emit(\'remove\')">Remove</span>\
+                    <input type="checkbox" style="-webkit-app-region: no-drag"> {{ title }}\
                 </li>\
             ',
             props: ['title']
         })
 
+        let ipcRenderer = require('electron').ipcRenderer;
+        
         new Vue({
             el: '#pin',
             data: {
@@ -57,6 +60,16 @@
                 }
                 ],
                 nextTodoId: 2
+            },
+            created: function() {
+                body = document.getElementsByTagName('body')[0];
+                height = window.getComputedStyle(body).height.slice(0, -2);
+                ipcRenderer.send('resize', height);
+            },
+            updated: function() {
+                body = document.getElementsByTagName('body')[0];
+                height = window.getComputedStyle(body).height.slice(0, -2);
+                ipcRenderer.send('resize', height);
             },
             methods: {
                 addNewPin: function () {
