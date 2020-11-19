@@ -1,0 +1,23 @@
+{
+  "name": "pin",
+  "version": "0.1.0",
+  "description": "A pin widget",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MU001999/pin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MU001999/pin/issues"
+  },
+  "homepage": "https://github.com/MU001999/pin#readme",
+  "devDependencies": {
+    "electron": "^11.0.1"
+  }
+}

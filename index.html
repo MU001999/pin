@@ -6,7 +6,6 @@
     <title>Pin</title>
     <link rel="stylesheet" href="src/bootstrap.css">
     <script src="src/vue.js"></script>
-    <script src="src/jquery.js"></script>
     <script src="src/bootstrap.js"></script>
 </head>
 <body>
@@ -35,18 +34,6 @@
             </div>
         </form>
     </div>
-
-    <style>
-        body {
-            background-image: url(background.jpg);
-            background-size:     cover;
-            background-repeat:   no-repeat;
-        }
-
-        #pin {
-            position: absolute;
-        }
-    </style>
 
     <script>
         Vue.component('pin-item', {
@@ -81,40 +68,6 @@
                 }
             }
         })
-
-        document.onkeydown = function (e) {
-            var ev = window.event || e;
-            var code = ev.keyCode || ev.which;
-            if (code == 116) {
-                ev.keyCode ? ev.keyCode = 0 : ev.which = 0;
-                cancelBubble = true;
-                return false;
-            }
-        }
-        document.οncοntextmenu = function() {return false};
     </script>
-
-    <script>
-        function move(){
-            var _move = false;
-            var _x, _y;
-            $("#pin").click(function() {}).mousedown(function(e) {
-                _move = true;
-                _x = e.pageX-parseInt($("#pin").css("left"));
-                _y = e.pageY-parseInt($("#pin").css("top"));
-            });
-            $(document).mousemove(function(e) {
-                if(_move) {
-                    var x = e.pageX-_x;
-                    var y = e.pageY-_y;
-                    $("#pin").css({top:y,left:x});
-                }
-            }).mouseup(function() {
-                _move = false;
-            });
-        }
-        move();
-    </script>
-
 </body>
 </html>
