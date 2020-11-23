@@ -9,7 +9,8 @@ function createWindow () {
       nodeIntegration: true,
       enableRemoteModule: true
     },
-    frame: false
+    frame: false,
+    transparent: true
   })
 
   ipcMain.on('resize', (e, width, height) => {
