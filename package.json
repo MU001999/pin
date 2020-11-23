@@ -27,6 +27,9 @@
     "electron-store": "^6.0.1"
   },
   "build": {
-    "appId": "Mu001999"
+    "appId": "Mu001999",
+    "win": {
+      "icon": "src/pin.ico"
+    }
   }
 }
