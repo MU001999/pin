@@ -23,6 +23,8 @@
                 v-for="(todo, index) in todos"
                 v-bind:key="todo.id"
                 v-bind:title="todo.title"
+                v-bind:del="todo.del"
+                v-on:update="updatePin(index)"
                 v-on:remove="unPin(index)"
             ></li>
         </ul>
@@ -32,11 +34,11 @@
         Vue.component('pin-item', {
             template: '\
                 <li class="list-group-item">\
-                    <input type="checkbox" style="-webkit-app-region: no-drag"> &nbsp; {{ title }}\
+                    <input type="checkbox" style="-webkit-app-region: no-drag" v-on:click="$emit(\'update\')"> &nbsp; <del v-if="del" class="text-muted">{{ title }}</del><template v-else>{{ title }}</template>\
                     <button type="button" class="close" aria-label="Close" style="-webkit-app-region: no-drag" v-on:click="$emit(\'remove\')"><span aria-hidden="true">&times;</span></button>\
                 </li>\
             ',
-            props: ['title']
+            props: ['title', 'del']
         })
 
         const ipcRenderer = require('electron').ipcRenderer;
@@ -53,9 +55,27 @@
                     {
                         id: 1,
                         title: 'Do nothing',
+                        del: false
                     }
                 ],
                 nextTodoId: 2
+            }
+        }
+        else
+        {
+            /**
+             * make compatible with 0.1.0
+            */
+            for (var i in stored_data.todos)
+            {
+                if (!stored_data.todos[i].hasOwnProperty('del'))
+                {
+                    stored_data.todos[i].del = false;
+                }
+                else
+                {
+                    break;
+                }
             }
         }
 
@@ -78,7 +98,8 @@
                 newPin: function () {
                     this.todos.push({
                         id: this.nextTodoId++,
-                        title: this.NewPinText
+                        title: this.NewPinText,
+                        del: false
                     })
                     this.NewPinText = '';
                     store.set('stored_data', stored_data);
@@ -86,6 +107,9 @@
                 unPin: function (index) {
                     this.todos.splice(index, 1);
                     store.set('stored_data', stored_data);
+                },
+                updatePin: function (index) {
+                    this.todos[index].del = this.todos[index].del ? false : true
                 }
             }
         });
